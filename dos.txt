@@ -1,0 +1,53 @@
+
+查看本机ip地址:
+	-ipconfig	(win)
+	-ifconfig	(mac,linux)
+	
+切换盘符:
+	-d:
+	-f:
+	
+进入某路径:
+	-cd D:\新建文件夹(2)\git	(只有当前为D盘,才能直接使用,否则要切换盘符)
+	-cd git	(也可以一步步进入)
+	
+回到上级目录:
+	-cd..
+	
+列出该目录下的所有内容:
+	-dir	(win)
+	-ls	    (mac,linux)
+	
+	
+创建文件夹:
+	-md(mkdir) 文件夹名
+删除文件夹:
+	-rmdir 文件夹名   (只能删除空的文件夹)
+	
+	
+创建文件:
+	-echo hello tuling>demo.txt
+删除文件:
+	-del demo.txt
+
+
+显示当前所在工作目录的全路径：
+			-pwd	(mac)
+	
+清屏:
+	-cls
+	-clear(win)
+	
+测试网络是否连通:
+	-ping www.baidu.com
+	
+退出:
+	-exit
+	
+	
+cat touch
+
+查询某个服务的端口号:
+	(ps -ef lgrep redis-server)  
+杀死某个端口:
+	(kill -9 8582)

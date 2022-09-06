@@ -1,0 +1,93 @@
+想要让git对一个目录进行版本控制需要一下步骤:
+
+	-进入要管理的文件夹
+
+	-执行初始化命令)(注：执行后会自动检测)
+		-git init
+
+	-管理目录下的文件状态(注：新增的文件和修改过后的文件都是红色的)
+		-git status
+			-红色：新增的文件/修改过后的文件(git未被管理的文件)
+			-绿色：git已管理的文件
+			-无色：生成版本后，查询不到
+
+	-管理指定文件(注：管理后,文件会由红变绿)
+		-git add 文件名
+		-git add .
+
+	-个人信息配置：用户名、邮箱【一次即可】
+		-git config --global user.email "you@example.com"
+		-git config --global user.name "Your Name"
+
+	-生成版本
+		-git commit -m "描述信息"
+
+	-查看版本记录
+		-git log
+
+回滚功能:
+	-回滚至之前的版本:
+		-git log
+		-git reset --hard 版本号
+	-回滚至之后的版本:
+		-git reflog
+		-git reset --hard 版本号
+补充:
+	-git checkout --文件名
+	-git reset HEAD 文件名
+
+
+分支:
+	-查看分支
+		-git branch
+	-创建分支
+		-git branch 分支名称
+	-切换分支
+		-git checkout 分支名称
+	-合并分支(注：切换分支再合并、可能产生冲突要修改冲突代码)
+		-git merge 要合并的分支名
+	-删除分支
+		-git branch -d 分支名称
+
+
+推送到github:
+	-git remote add origin 远程仓库地址(给远程仓库起别名)
+		-git remote add origin https://github.com/cartoones/DEMO.git
+	-git push -u origin 分支名称(向远程仓库推送代码)(-u 下次默认提交到分支)
+		-git push -u origin master
+
+从github下载代码:
+	-git clone 远程仓库地址(内部已实现it remote add origin 远程仓库地址)
+		-git clone https://github.com/cartoones/DEMO.git
+	-代码已下载完毕，切换分支，继续开发
+		-git checkout 分支名称
+	-把master分支合并到dev分支
+		-git merge master
+	-修改代码
+	-提交代码
+		-git add.
+		-git commit -m 'xx'
+		-git push origin dev
+
+	-如果已经有部分代码，直接更新即可
+		-git pull origin(远程仓库地址) dev(分支名称)
+
+
+
+
+
+
+
+eg:'''
+echo "# DEMO" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch main
+git remote add origin https://github.com/cartoones/DEMO.git
+git push -u origin main
+'''
+
+
+
+

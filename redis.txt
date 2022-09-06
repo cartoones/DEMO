@@ -1,0 +1,287 @@
+启动客户端:
+	-redis-server.exe/redis-server
+报错解决(https://blog.csdn.net/weixin_39339460/article/details/106826956):
+	-redis-cli.exe
+	-shutdown
+	-exit
+
+启动客户端:
+	-redis-cli
+
+注：要先开启服务端，才能再开启客户端(或开机自动启动服务端，这样就可以直接开启客户端)
+运⾏测试命令:
+	-ping
+切换数据库,数据库没有名称，默认有16个，通过0-15来标识:
+	-select 10
+
+redis是key-value的数据结构，每条数据都是⼀个键值对
+
+值的类型分为五种：字符串string、哈希hash、列表list、集合set、有序集合zset
+
+String(key:值):
+	增*
+	-设置键值，一个变量可以设置多次，如果设置的键不存在则为添加，如果设置的键已经存在则修改。
+	(set key value):
+		-set name tuling
+	-设置键值，一个变量只能被设置一次，可用于分布式锁。
+	(setnx key value):
+		-setnx name tuling
+	-设置键值及过期时间，以秒为单位,作用优惠卷.验证码.session.token过期等。
+	(setex key seconds value)
+		-setex name 3 tuling
+	-设置多个键值(mset key1 value1 key2 value2 ...)
+		-mset a1 python a2 java a3 c
+	删*
+	-删除值(del key):
+		-del name
+	改*
+	-追加值(append key value):
+		-append name " !"/append name redis
+	-自增/减值：
+		-incr key(自增1)/incrby count 10(自增10)
+		-decr key(自减1)/decrby count 10(自减10)
+	查*
+	-获取值(get key):
+		-get name
+	-查看值长度(strlen key)：
+		-strlen name
+	-获取多个值(mget key1 key2 ...)
+		-mget a1 a2 a3
+
+
+
+键命令：
+	删*
+	-删除键(del key1 key2 ...):
+		-del a2 a3
+	-清空所有key,慎用，一旦执行，则redis所有数据库0~15的全部key都会被清除:
+		-flushall
+	改*
+	-设置过期时间，一开始没有设置过期时间,（如果没有指定过期时间则⼀直存在，直到使⽤DEL移除）
+	(expire key seconds)
+		-expire a1 3
+	-key重命名(rename  oldkey newkey):
+		-rename bb aa
+	查*
+	-查找键，参数⽀持正则表达式(keys pattern):
+		-查看所有键:
+			-keys *
+		-查看名称中包含a的键:
+			-keys a*
+	-查看键对应的value的类型(type key):
+		-type a1
+	-查看有效时间，以秒为单位 #-1表示永不过期 #-2表示当前数据已经过期 #还剩多长时间过期
+	(ttl key):
+		-ttl bb
+	-判断键是否存在，如果存在返回1，不存在返回0(exists key):
+		-exists a1
+
+
+
+List(key: [值1，值2, 值3.....]):
+	增*
+	-在左侧插⼊数据(lpush key value1 value2 ...):
+		-lpush name a b c
+	-在右侧插⼊数据(rpush key value1 value2 ...):
+		-rpush name 0 1
+	删*
+	-删除指定元素,将列表中前count次出现的值为value的元素移除/count=0删除所有
+	(lrem key count value)
+		-lrem name -2 b/lrem name 1 b
+	-删除键(del key):
+		-del name
+	-移除并获取列表成员(# 开发中往往使用rpush和lpop实现队列的数据结构->实现入列和出列)：
+		-lpop key(移除并获取列表第一个成员)
+		-rpop key(移除并获取列表最后一个成员)
+	改*
+	-按照索引插入元素(lset key index value):
+		-lset name 4 xiaohonghong
+	-按照名称插入元素:
+		-linsert name after a x
+		-linsert name before b y
+	查*
+	-返回列表⾥指定范围内的元素,start、stop为元素的下标索引。索引可以是负数，表示从尾部开始计数，如-1表示最后⼀个元素(lrange key start stop):
+		-lrange name 0 -1
+	-查找元素(lindex key index):
+		-lindex names 3
+	-获取列表长度(llen key):
+		-llen name
+
+
+
+Hsah(键key:{域field: 值value,域field: 值value,域field: 值value,}):
+	增*
+	-设置键的单个属性值(hset key field value):
+		-hset user name tuling
+	-设置键的多个属性值(hmset key field1 value1 field2 value2 ...):
+		-hmset u2 name python age 11
+	删*
+	-删除键的属性值(hdel key field1 field2 ...):
+		-hdel user name
+	-删除键(del key):
+		-del name
+	改*
+	-自增/减值：
+		-hincr key field (自增1)/hincrby key field 10(自增10)
+		-hdecr key field (自减1)/hdecrby key field 10(自减10)
+	查*
+	-获取键的某个属性的值(hget key field):
+		-hget user name
+	-获取键的属性和属性值(hgetall key):
+		-hgetall user(以 属性 属性值  属性 属性值的形式显示)
+	-获取键所有的属性(hkeys key):
+		-hkeys user
+	-获取键所有的属性值(hvals key):
+		-hvals user
+	-获取键的多个属性值(hmget key field1 field2 ...):
+		-hmget u2 name age
+	-判断某个键的属性是否存在(hexists key field):
+		-hexists u2 name
+
+
+
+Set(key: {值1, 值4, 值3, ...., 值5})元素唯一,无序:
+	增*
+	-添加元素(sadd key member1 member2 ...):
+		-sadd authors zhangsan lisi wangwu
+	删*
+	-删除指定元素(srem key value):
+		-srem authors wangwu
+	-随机抽取并删除一个或多个元素,# count为可选参数，不填则默认一个,被提取成员会从集合中被删除掉
+	(spop key [count=1])
+		-spop authors
+	改*
+	查*
+	-返回所有元素,无序(smembers key):
+		-smembers authors
+	-获取集合的长度(scard keys):
+		-scard authors
+
+	-交集、差集和并集(作用：推荐、（协同过滤，基于用户、基于物品）):
+		-sinter  key1 key2 key3 ....    # 交集、比较多个集合中共同存在的成员
+		-sdiff   key1 key2 key3 ....    # 差集、比较多个集合中不同的成员
+		-sunion  key1 key2 key3 ....    # 并集、合并所有集合的成员，并去重
+
+
+
+Zset(key: {值1 权重值1(数字);值2 权重值2;值3 权重值3;...})元素唯一,无序,权重值(score,分数)从小到大排列:
+	增*
+	-添加元素(zadd key score1 member1 score2 member2 ...):
+		-zadd a4 4 lisi 5 wangwu 6 zhaoliu 3 zhangsan
+	删*
+	-删除指定元素(zrem key member1 member2 ...):
+		-zrem a4 zhangsan zhaoliu
+	-删除指定数量的成员:
+		-zpopmin key [count]# 删除指定数量的成员，从最低score开始删除(zpopmin key 2)
+		-zpopmax key [count]# 删除指定数量的成员，从最高score开始删除
+	改*
+	查*
+	-获取score在指定区间的所有成员:
+		-zrangebyscore key min max     # 获取指定score区间并从低往高排序
+		-zrevrangebyscore key max min # 获取指定score区间并从高往低排序
+		-zrange key start stop         # 从低往高排序并获取指定索引区间
+		-zrevrange key start stop      # 从高往低排序并获取指定索引区间
+	-获取集合长度(zcard key):
+		-zcard a4 
+	-获取指定成员的权重值(zscore key member):
+		-zscore a4 lisi
+	-获取指定成员在集合中的排名数:
+		-zrank key member      # score从小到大的排名
+		-zrevrank key member   # score从大到小的排名
+	-获取score在指定区间的所有成员数量
+		-zcount key min max(是分数不是索引)
+	-给指定成员增加增加权重值(zincrby key score member);
+		-zincrby a4 10 lisi
+
+
+
+Python操作redis:
+# 方式1
+import redis
+
+r = redis.Redis(host='127.0.0.1', port=6379, db=0)
+r.set('foo', 'Bar')
+print(r.get('foo'))
+
+# 方式2
+import redis
+
+pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0)
+r = redis.Redis(connection_pool=pool)
+r.set('bar', 'Foo')
+print(r.get('bar'))
+
+# Python 数据类型操作
+import redis
+
+pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, decode_responses=True)
+r = redis.Redis(connection_pool=pool)
+
+# （1）字符串操作：不允许对已经存在的键设置值
+ret = r.setnx("name", "yuan")
+print(ret)  # Ture
+# （2）字符串操作：设置键有效期
+r.setex("good_1001", 10, "2")
+# （3）字符串操作：自增自减
+r.set("age", 20)
+r.incrby("age", 2)
+print(r.get("age"))  # b'22'
+
+# （4）hash操作：设置hash
+r.hset("info", "name", "rain")
+print(r.hget("info", "name"))  # b'rain'
+r.hmset("info", {"gedner": "male", "age": 22})
+print(r.hgetall("info"))  # {b'name': b'rain', b'gender': b'male', b'age': b'22'}
+
+# （5）list操作：设置list
+r.rpush("scores", "100", "90", "80")
+r.rpush("scores", "70")
+r.lpush("scores", "120")
+print(r.lrange("scores", 0, -1))  # ['120', '100', '90', '80', '70']
+r.linsert("scores", "AFTER", "100", 95)
+print(r.lrange("scores", 0, -1))  # ['120', '100', '95', '90', '80', '70']
+print(r.lpop("scores"))  # 120
+print(r.rpop("scores"))  # 70
+print(r.lindex("scores", 1)) # '95'
+
+# （6）集合操作
+# key对应的集合中添加元素
+r.sadd("name_set", "zhangsan", "lisi", "wangwu")
+# 获取key对应的集合的所有成员
+print(r.smembers("name_set"))  # {'lisi', 'zhangsan', 'wangwu'}
+# 从key对应的集合中随机获取 numbers 个元素
+print(r.srandmember("name_set", 2))
+r.srem("name_set", "lisi")
+print(r.smembers("name_set"))  # {'wangwu', 'zhangsan'}
+
+# （7）有序集合操作
+# 在key对应的有序集合中添加元素
+r.zadd("jifenbang", {"yuan": 78, "rain": 20, "alvin": 89, "eric": 45})
+# 按照索引范围获取key对应的有序集合的元素
+# zrange( name, start, end, desc=False, withscores=False, score_cast_func=float)
+print(r.zrange("jifenbang", 0, -1))  # ['rain', 'eric', 'yuan', 'alvin']
+print(r.zrange("jifenbang", 0, -1, withscores=True))  # ['rain', 'eric', 'yuan', 'alvin']
+print(r.zrevrange("jifenbang", 0, -1, withscores=True))  # ['rain', 'eric', 'yuan', 'alvin']
+
+print(r.zrangebyscore("jifenbang", 0, 100))
+print(r.zrangebyscore("jifenbang", 0, 100, start=0, num=1))
+
+# 删除key对应的有序集合中值是values的成员
+print(r.zrem("jifenbang", "yuan"))  # 删除成功返回1
+print(r.zrange("jifenbang", 0, -1))  # ['rain', 'eric', 'alvin']
+
+# （8）键操作
+r.delete("scores")
+print(r.exists("scores"))
+print(r.keys("*"))
+r.expire("name",10)
+
+
+
+
+
+
+
+
+
+
