@@ -1,0 +1,36 @@
+-查看已有虚拟环境：
+	-conda info --envs
+
+-创建新的虚拟环境：
+	-conda create --name newName python=3.7
+	-activate newName(# 激活新建的虚拟环境)
+
+-切换虚拟环境（非常重要）：
+	-conda activate newName
+
+-删除虚拟环境：
+	-conda remove -n newName --all
+
+-退出当前虚拟环境：
+	-conda deactivate
+
+-查看当前环境中有哪些包：
+	-conda list
+
+-安装第三方库：
+	-conda install ipykernel
+
+
+
+#补充
+-关闭当前虚拟环境，返回默认虚拟环境:
+	-conda deactivate 
+
+-查看当前环境的python版本:
+	-python --version
+
+-在指定环境下安装包:
+	-conda install -n newName package_name
+
+-在指定环境下删除包:
+	-conda remove --name newName  package_name
